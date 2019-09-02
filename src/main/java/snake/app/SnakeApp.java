@@ -17,9 +17,9 @@ public class SnakeApp {
     private static Graphics graphics;
 
     public static void main(String[] args) {
-
         initFrame();
         graphics = board.getGraphics();
+        board.setScore(scoreCount);
         startBtn.addActionListener(a->{
             if(startBtn.getText().equals("Start")) {
                 board.init();
@@ -31,10 +31,9 @@ public class SnakeApp {
                 startBtn.setText("Start");
                 board.gameOver = true;
                 board.startTicking();
-
+                scoreCount.setText("0");
             }
         });
-
     }
 
     private static void initFrame(){
