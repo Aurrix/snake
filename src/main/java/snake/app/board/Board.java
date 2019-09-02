@@ -195,6 +195,14 @@ public class Board extends JPanel {
         }
     }
 
+    public List<SnakeBody> getSnake() {
+        return snake;
+    }
+
+    public void setSnake(List<SnakeBody> snake) {
+        this.snake = snake;
+    }
+
     public JLabel getScore() {
         return score;
     }

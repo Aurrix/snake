@@ -2,10 +2,18 @@ plugins {
     id 'java'
 }
 
+apply plugin: 'java'
+
 group 'com.aurrix'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'snake.app.SnakeApp'
+    }
+}
 
 repositories {
     mavenCentral()
