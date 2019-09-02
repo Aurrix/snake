@@ -11,11 +11,10 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 
 public class Board extends JPanel {
-    public int TICK = 150;
+    public int TICK = 75;
     public int BLOCK_SIZE_FACTOR = 25;
     public boolean gameOver = true;
     public Dimension blockSize = new Dimension();
@@ -24,7 +23,6 @@ public class Board extends JPanel {
     List<Apple> foods = new ArrayList<>();
     public Directions pressed = Directions.RIGHT;
     JLabel score;
-
 
 
     public Board() {
@@ -81,17 +79,17 @@ public class Board extends JPanel {
                                 break;
                             case DOWN:
 
-                                    snake.get(i).setPosition(new Point(current.x, current.y + 1));
+                                snake.get(i).setPosition(new Point(current.x, current.y + 1));
 
                                 break;
                             case LEFT:
 
-                                    snake.get(i).setPosition(new Point(current.x - 1, current.y));
+                                snake.get(i).setPosition(new Point(current.x - 1, current.y));
 
                                 break;
                             case RIGHT:
 
-                                    snake.get(i).setPosition(new Point(current.x + 1, current.y));
+                                snake.get(i).setPosition(new Point(current.x + 1, current.y));
 
                                 break;
                         }
@@ -110,9 +108,9 @@ public class Board extends JPanel {
                 repaint();
             }
         });
-        
-        generateOneFood();
-        
+
+        foods.add(generateOneFood());
+
     }
 
     private void checkForFoodEaten() {
@@ -120,36 +118,44 @@ public class Board extends JPanel {
         Iterator<Apple> foodIterator = foods.iterator();
         List<SnakeBody> tempSnake = new ArrayList<>();
         List<Apple> tempFood = new ArrayList<>();
-        while(foodIterator.hasNext()){
+        while (foodIterator.hasNext()) {
             Apple currentApple = foodIterator.next();
-            while(snakeIterator.hasNext()){
+            while (snakeIterator.hasNext()) {
                 SnakeBody currentBody = snakeIterator.next();
-                if (currentApple.getPosition().equals(currentBody.getPosition())){
-                    Point position = snake.get(snake.size()-1).getPreviousPosition();
-                    tempSnake.add(new SnakeBody(false,position,position));
+                if (currentApple.getPosition().equals(currentBody.getPosition())) {
+                    Point position = snake.get(snake.size() - 1).getPreviousPosition();
+                    tempSnake.add(new SnakeBody(false, position, position));
                     foodIterator.remove();
-                    tempFood.add(new Apple(new Point((int)(Math.random()*blockSize.width),(int)(Math.random()*blockSize.height))));
+                    tempFood.add(generateOneFood());
                 }
             }
         }
         snake.addAll(tempSnake);
         foods.addAll(tempFood);
-        score.setText(String.valueOf(Integer.valueOf(score.getText())+tempSnake.size()));
+        score.setText(String.valueOf(Integer.valueOf(score.getText()) + tempSnake.size()));
     }
 
-    private void generateOneFood() {
-        foods.add(new Apple(new Point((int)(Math.random()*blockSize.width),(int)(Math.random()*blockSize.height))));
+    private Apple generateOneFood() {
+        Apple apple;
+        apple = new Apple(new Point((int) (Math.random() * blockSize.width), (int) (Math.random() * blockSize.height)));
+        for (SnakeBody body : snake) {
+            while (body.getPosition().equals(apple.getPosition())) {
+                apple = new Apple(new Point((int) (Math.random() * blockSize.width), (int) (Math.random() * blockSize.height)));
+            }
+        }
+
+        return apple;
     }
 
     private void checkForGameOver() {
 
-        Point headPosition = snake.get(0).position;
+        Point headPosition = snake.get(0).getPosition();
 
-        if (headPosition.x < 0 || headPosition.y < 0 || headPosition.x > blockSize.width || headPosition.y > blockSize.height) {
+        if (headPosition.x < 0 || headPosition.y < 0 || headPosition.x > getWidth() / blockSize.width || headPosition.y > getHeight() / blockSize.height) {
             gameOver = true;
         }
         for (SnakeBody body : snake) {
-            if (body.getPosition().equals(headPosition) & !body.isHead) {
+            if (body.getPosition().equals(headPosition) & !body.isHead()) {
                 gameOver = true;
             }
         }
@@ -175,6 +181,7 @@ public class Board extends JPanel {
             }
         }
     }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

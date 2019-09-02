@@ -1,5 +1,5 @@
 package snake.app.directions;
 
 public enum Directions {
-   RIGHT,TOP,DOWN,LEFT
+    RIGHT, TOP, DOWN, LEFT
 }

@@ -1,16 +1,13 @@
 package snake.app;
 
 import snake.app.board.Board;
-import snake.app.directions.Directions;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class SnakeApp {
     private static JFrame jFrame;
-    private static JLabel scoreLabel ;
+    private static JLabel scoreLabel;
     private static JLabel scoreCount;
     private static Board board;
     private static JButton startBtn;
@@ -20,14 +17,13 @@ public class SnakeApp {
         initFrame();
         graphics = board.getGraphics();
         board.setScore(scoreCount);
-        startBtn.addActionListener(a->{
-            if(startBtn.getText().equals("Start")) {
+        startBtn.addActionListener(a -> {
+            if (startBtn.getText().equals("Start")) {
                 board.init();
                 startBtn.setText("Stop");
                 board.gameOver = false;
                 board.startTicking();
-            }
-            else {
+            } else {
                 startBtn.setText("Start");
                 board.gameOver = true;
                 board.startTicking();
@@ -36,10 +32,10 @@ public class SnakeApp {
         });
     }
 
-    private static void initFrame(){
+    private static void initFrame() {
 
         jFrame = new JFrame("Snake");
-        jFrame.setSize(500,500);
+        jFrame.setSize(500, 500);
 
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,7 +51,7 @@ public class SnakeApp {
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.gridwidth = 2;
-        jFrame.add(board,gbc);
+        jFrame.add(board, gbc);
 
         scoreLabel = new JLabel("Score: ");
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -64,7 +60,7 @@ public class SnakeApp {
         gbc.weighty = 0.01;
         gbc.gridwidth = 1;
         gbc.weightx = 0.1;
-        jFrame.add(scoreLabel,gbc);
+        jFrame.add(scoreLabel, gbc);
 
         scoreCount = new JLabel("0");
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -73,7 +69,7 @@ public class SnakeApp {
         gbc.weightx = 0.9;
         gbc.weighty = 0.01;
 
-        jFrame.add(scoreCount,gbc);
+        jFrame.add(scoreCount, gbc);
 
         startBtn = new JButton("Start");
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -82,8 +78,7 @@ public class SnakeApp {
         gbc.weighty = 0.01;
         gbc.weightx = 1;
         gbc.gridwidth = 2;
-        jFrame.add(startBtn,gbc);
-
+        jFrame.add(startBtn, gbc);
 
 
         jFrame.setVisible(true);
