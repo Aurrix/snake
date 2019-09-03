@@ -1,34 +1,50 @@
 package snake.app.board;
-
+/**
+ * Copyright 2002-2018 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import snake.app.body.Apple;
 import snake.app.body.SnakeBody;
 import snake.app.directions.Directions;
+import snake.app.point.Point;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
+/**
+ * @author Alisher Urunov
+ */
 
 public class Board extends JPanel {
-    public int TICK = 75;
-    public int BLOCK_SIZE_FACTOR = 25;
-    public boolean gameOver = true;
-    public Dimension blockSize = new Dimension();
-    private Thread boardThread;
-    List<SnakeBody> snake = new ArrayList<>();
-    List<Apple> foods = new ArrayList<>();
-    public Directions pressed = Directions.RIGHT;
-    JLabel score;
+    private int TICK = 75; // Determines how fast games goes
+    public boolean gameOver = true; // Stop / start gameplay boolean
+    private Dimension blockSize = new Dimension(); // For storing block sizes (screen size / factor)
+    private Thread boardThread; // Game loop
+    List<SnakeBody> snake = new ArrayList<>(); // Snake
+    List<Apple> foods = new ArrayList<>(); // Food on board
+    public Directions pressed = Directions.RIGHT; // Initial Snake direction
+    private JLabel score; // Score label
 
 
-    public Board() {
-    }
 
     public void init() {
+        // Listen on key presses
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -38,6 +54,7 @@ public class Board extends JPanel {
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN && pressed != Directions.TOP) {
                     pressed = Directions.DOWN;
+
                 }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT && pressed != Directions.RIGHT) {
                     pressed = Directions.LEFT;
@@ -49,6 +66,8 @@ public class Board extends JPanel {
         });
         setFocusable(true);
         requestFocusInWindow();
+
+        // Generate snake
         snake.clear();
         foods.clear();
         snake.add(new SnakeBody(true, new Point(2, 0), new Point(2, 0)));
@@ -56,12 +75,14 @@ public class Board extends JPanel {
         snake.add(new SnakeBody(false, new Point(0, 0), new Point(0, 0)));
         updateBlockSize();
         pressed = Directions.RIGHT;
+
+
         // LOOP THREAD
 
         boardThread = new Thread(() -> {
             while (!gameOver) {
                 try {
-                    boardThread.sleep(TICK);
+                    Thread.sleep(TICK);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -103,17 +124,25 @@ public class Board extends JPanel {
                     }
 
                 }
+
+                // Check if player lost or ate food then repaint
                 checkForGameOver();
                 checkForFoodEaten();
                 repaint();
             }
         });
 
+
+        // Generate one food at start
         foods.add(generateOneFood());
 
     }
 
-    private void checkForFoodEaten() {
+    /**
+     * Loops over snake and foods arrays. If one of positions match
+     * adds snake body part and generates food
+     */
+    public void checkForFoodEaten() {
         Iterator<SnakeBody> snakeIterator = snake.iterator();
         Iterator<Apple> foodIterator = foods.iterator();
         List<SnakeBody> tempSnake = new ArrayList<>();
@@ -132,10 +161,14 @@ public class Board extends JPanel {
         }
         snake.addAll(tempSnake);
         foods.addAll(tempFood);
-        score.setText(String.valueOf(Integer.valueOf(score.getText()) + tempSnake.size()));
+            score.setText(String.valueOf(Integer.parseInt(score.getText()) + tempSnake.size()));
     }
 
-    private Apple generateOneFood() {
+    /**
+     * Generates one food on board
+     * @return Apple with unique position to snake bodies
+     */
+    public Apple generateOneFood() {
         Apple apple;
         apple = new Apple(new Point((int) (Math.random() * blockSize.width), (int) (Math.random() * blockSize.height)));
         for (SnakeBody body : snake) {
@@ -147,7 +180,13 @@ public class Board extends JPanel {
         return apple;
     }
 
-    private void checkForGameOver() {
+
+    /**
+     * Loops over snake bodies and checks if head is intact with counter
+     * parts or walls
+     * Changes gameOver boolean
+     */
+    public void checkForGameOver() {
 
         Point headPosition = snake.get(0).getPosition();
 
@@ -157,19 +196,28 @@ public class Board extends JPanel {
         for (SnakeBody body : snake) {
             if (body.getPosition().equals(headPosition) & !body.isHead()) {
                 gameOver = true;
+                break;
             }
         }
 
     }
 
-    private void updateBlockSize() {
-        int ratio = getWidth() / getHeight();
+    /**
+     * Calculates desired block sizes
+     * depending on BLOCK_SIZE_FACTOR
+     */
+    public void updateBlockSize() {
+        int ratio = getWidth() >= getHeight() ? getWidth() / getHeight() : getHeight() / getWidth();
+        int BLOCK_SIZE_FACTOR = 25;
         blockSize.width = getWidth() / BLOCK_SIZE_FACTOR / ratio;
         blockSize.height = getHeight() / BLOCK_SIZE_FACTOR;
 //        System.out.println(blockSize.width);
 //        System.out.println(blockSize.height);
     }
 
+    /**
+     * Starts or stops game loop depending on gameOver boolean
+     */
     public void startTicking() {
         if (!gameOver) {
             boardThread.start();
@@ -197,14 +245,6 @@ public class Board extends JPanel {
 
     public List<SnakeBody> getSnake() {
         return snake;
-    }
-
-    public void setSnake(List<SnakeBody> snake) {
-        this.snake = snake;
-    }
-
-    public JLabel getScore() {
-        return score;
     }
 
     public void setScore(JLabel score) {
