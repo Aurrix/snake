@@ -4,7 +4,7 @@ Classic Snake Game based on core Java technologies.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
@@ -24,7 +24,7 @@ gradle build
 ```
 4. Gradle will generate jar at ../snake/build/libs/
 
-## Running the tests
+### Running the tests
 
 To run test cases repeat steps 1,2 then type:
 
